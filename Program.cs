@@ -1,15 +1,13 @@
-﻿using System.Security.AccessControl;
+﻿//Hazardous distance zone classification tool
+//BS EN ISO 60079-10-1 (2015)
 
 internal class Program
 {
-    private static void Main(string[] args)
+    public static void Main(string[] args)
     {
-        //Hazardous distance zone classification tool
-        //BS EN ISO 60079-10-1 (2015)
-
         //Inputs
         float S_leak;
-        int P_atmospheric;
+        float P_atmospheric;
         int P;
         int Z_comp;
         int R;
@@ -24,7 +22,10 @@ internal class Program
         float LFL;
         float M;
         float AIT;
-        
+        float Gamma;
+        float P_c_actual;
+        float PwrPc;
+
         //InputValues
         S_leak = (float)000000.25;
         P_atmospheric = 101325;
@@ -38,7 +39,7 @@ internal class Program
         T = 15;
         T_a = 20;
         C_d = (float)0.75;
-        
+
 
         //DisplayValuesConsole
         Console.WriteLine("Hazardous distance zone classification tool");
@@ -70,11 +71,19 @@ internal class Program
             LFL = (float)0.017;
             M = (float)44.1;
             AIT = 450;
-            P_gas = ((P_atmospheric * (float)M)) / (R * (T_a + (float)273.15));
+            P_gas = P_atmospheric * (float)M / (R * (T_a + (float)273.15));
+            Gamma = (float)M * (float)C_p / (M * C_p - R / 1000);
+            PwrPc = ((float)Gamma + 1) / 2;
+            double CriticalPressure = P_atmospheric * Math.Pow(PwrPc, (float)Gamma / ((float)Gamma - 1));
+
             Console.WriteLine("gas density " + P_gas + " kg/m^3");
             Console.WriteLine("Lower flammable limit " + LFL + " vol/vol");
             Console.WriteLine("Molar mass " + M + " kg/kmol");
             Console.WriteLine("Auto-ignition temperature " + AIT + " °C");
+            Console.WriteLine("Polytropic index of adiabatic expansion " + Gamma);
+            Console.WriteLine("critical pressure " + CriticalPressure + " Pa");
+
+
         }
         else if (userValue == "Benzene")
         {
@@ -84,11 +93,11 @@ internal class Program
             LFL = (float)0.012;
             M = (float)78.11;
             AIT = 498;
-            P_gas = ((P_atmospheric * (float)M)) / (R * (T_a + (float)273.15));
+            P_gas = P_atmospheric * (float)M / (R * (T_a + (float)273.15));
             Console.WriteLine("gas density " + P_gas + " kg/m^3");
             Console.WriteLine("Lower flammable limit " + LFL + " vol/vol");
             Console.WriteLine("Molar mass " + M + " kg/kmol");
-            Console.WriteLine("Auto-ignition temperature " + AIT + " °C"); ;
+            Console.WriteLine("Auto-ignition temperature " + AIT + " °C");
         }
         else if (userValue == "Natural gas")
         {
@@ -98,27 +107,18 @@ internal class Program
             LFL = (float)0.04;
             M = 20;
             AIT = 500;
-            P_gas = ((P_atmospheric * (float)M)) / (R * (T_a + (float)273.15));
+            P_gas = P_atmospheric * (float)M / (R * (T_a + (float)273.15));
             Console.WriteLine("gas density " + P_gas + " kg/m^3");
             Console.WriteLine("Lower flammable limit " + LFL + " vol/vol");
             Console.WriteLine("Molar mass " + M + " kg/kmol");
-            Console.WriteLine("Auto-ignition temperature " + AIT + " °C"); ;
+            Console.WriteLine("Auto-ignition temperature " + AIT + " °C");
+
         }
         else
         {
             string message = "No " + userValue + " option available sorry; please choose either Propane, Benzene or Natural gas";
             Console.WriteLine(message);
         }
-
-        
-
-        Console.ReadLine();
-
-
-
-            //"Pressure inside the gas container is lower than the critical pressure (pc)";
-
-            //"Pressure inside the gas container is higher than the critical pressure (pc)";
 
     }
 }
