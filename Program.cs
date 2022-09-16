@@ -5,46 +5,31 @@ internal class Program
 {
     public static void Main(string[] args)
     {
-        //B.1 Symbols
-        float C_p; //specific heat at constant pressure (J/kg K);
+        // Defined Parameters (B.1)
+        float C_p = (float)1.6; //specific heat at constant pressure (J/kg K);
         float Gamma; //polytropic index of adiabatic expansion or ratio of specific heats (dimensionless);
         float M; //molar mass of gas or vapour (kg/kmol)
-        int P; //pressure inside the container (Pa)
-        float P_a; //atmospheric pressure (101 325 Pa);
-        float P_c; //critical pressure (Pa);
-        int R; //universal gas constant (8314 J/kmol K);
+        int P = 1000000; //pressure inside the container (Pa)
+        float P_a = 101325; //atmospheric pressure (101 325 Pa);
+        double P_c; //critical pressure (Pa);
+        int R = 8314; //universal gas constant (8314 J/kmol K);
         float P_gas; //liquid density (kg/m3);
-        float S_leak; //cross section of the opening (hole), through which the fluid is released (m2)
-        int T; //absolute temperature of the fluid, gas or liquid (K);
-        int T_a; //absolute ambient temperature (K)
-        float U_w; //wind speed over the liquid pool surface (m/s);
-        int Z_comp; //compressibility factor (dimensionless). 
+        float S_leak = (float)000000.25; //cross section of the opening (hole), through which the fluid is released (m2)
+        int T = 15; //absolute temperature of the fluid, gas or liquid (K);
+        int T_a = 20; //absolute ambient temperature (K)
+        float U_w = (float)0.3; //wind speed over the liquid pool surface (m/s);
+        int Z_comp = 1; //compressibility factor (dimensionless). 
 
-        //C.1 symbols
-        float C_d; //discharge coefficient (dimensionless), characteristic of large ventilation openings, inlet or outlet, and accounts for the turbulence and viscosity, typically 0, 50 to 0, 75; 
-        float Q_1; //volumetric flow rate of air entering the room through apertures (m3/s);
-        int F_ventilation_inefficiency; //mean background concentration Xb in the room divided by the concentration at the ventilation outlet(dimensionless);
+        // Defined Parameters (C.1)
+        float C_d = (float)0.75; //discharge coefficient (dimensionless), characteristic of large ventilation openings, inlet or outlet, and accounts for the turbulence and viscosity, typically 0, 50 to 0, 75; 
+        float Q_1 = (float)6.804;; //volumetric flow rate of air entering the room through apertures (m3/s);
+        int F_ventilation_inefficiency = 3; //mean background concentration Xb in the room divided by the concentration at the ventilation outlet(dimensionless);
+
+        // Undefined Parameters (ChemicalCompoundSpecific)
+        float AIT; //Autoignition temperature (°C)
         float LFL; //lower flammable limit (vol/vol);
 
-        //Chemical properties
-        float AIT;
-        float PwrPc;
-
-        //InputValues
-        S_leak = (float)000000.25;
-        P_a = 101325;
-        P = 1000000;
-        Z_comp = 1;
-        R = 8314;
-        C_p = (float)1.6;
-        U_w = (float)0.3;
-        Q_1 = (float)6.804;
-        F_ventilation_inefficiency = 3;
-        T = 15;
-        T_a = 20;
-        C_d = (float)0.75;
-
-        //DisplayValuesConsole
+        //Console Output
         Console.WriteLine("Hazardous distance zone classification tool");
         Console.WriteLine("");
         Console.WriteLine("Pre Populated Parameters");
@@ -69,60 +54,75 @@ internal class Program
 
         if (userValue == "Propane")
         {
+            //PropaneChemicalValues
+            LFL = (float)0.017; //Lower Flammable Limit
+            M = (float)44.1; //molar mass of gas or vapour (kg/kmol)
+            AIT = 450; //Autoignition temperature (°C)
+
+            //UniqueFormulas
+            P_gas = P_a * (float)M / (R * (T_a + (float)273.15));
+            Gamma = (float)M * (float)C_p / (M * C_p - R / 1000);
+            double CriticalPressure = P_a * Math.Pow((((float)Gamma + 1) / 2), (float)Gamma / ((float)Gamma - 1));
+
+            //Console Output
             string message = "You've selected Propane...";
             Console.WriteLine(message);
             Console.WriteLine("");
-            LFL = (float)0.017;
-            M = (float)44.1;
-            AIT = 450;
-            P_gas = P_a * (float)M / (R * (T_a + (float)273.15));
-            Gamma = (float)M * (float)C_p / (M * C_p - R / 1000);
-            PwrPc = ((float)Gamma + 1) / 2;
-            double CriticalPressure = P_a * Math.Pow(PwrPc, (float)Gamma / ((float)Gamma - 1));
-
             Console.WriteLine("gas density " + P_gas + " kg/m^3");
             Console.WriteLine("Lower flammable limit " + LFL + " vol/vol");
             Console.WriteLine("Molar mass " + M + " kg/kmol");
             Console.WriteLine("Auto-ignition temperature " + AIT + " °C");
             Console.WriteLine("Polytropic index of adiabatic expansion " + Gamma);
             Console.WriteLine("critical pressure " + CriticalPressure + " Pa");
-
-            //if (userValue == "Propane");
-
-
         }
         else if (userValue == "Benzene")
         {
+            //BenzeneChemicalValues
+            LFL = (float)0.012; //Lower Flammable Limit
+            M = (float)78.11; //molar mass of gas or vapour (kg/kmol)
+            AIT = 498; //Autoignition temperature (°C)
+
+            //UniqueFormulas
+            P_gas = P_a * (float)M / (R * (T_a + (float)273.15));
+            Gamma = (float)M * (float)C_p / (M * C_p - R / 1000);
+            double CriticalPressure = P_a * Math.Pow((((float)Gamma + 1) / 2), (float)Gamma / ((float)Gamma - 1));
+
             string message = "You've selected Benzene...";
             Console.WriteLine(message);
             Console.WriteLine("");
-            LFL = (float)0.012;
-            M = (float)78.11;
-            AIT = 498;
-            P_gas = P_a * (float)M / (R * (T_a + (float)273.15));
             Console.WriteLine("gas density " + P_gas + " kg/m^3");
             Console.WriteLine("Lower flammable limit " + LFL + " vol/vol");
             Console.WriteLine("Molar mass " + M + " kg/kmol");
-
             Console.WriteLine("Auto-ignition temperature " + AIT + " °C");
+            Console.WriteLine("Polytropic index of adiabatic expansion " + Gamma);
+            Console.WriteLine("critical pressure " + CriticalPressure + " Pa");
         }
         else if (userValue == "Natural gas")
         {
+            //NaturalGasChemicalValues
+            LFL = (float)0.04; //Lower Flammable Limit
+            M = 20; //molar mass of gas or vapour (kg/kmol)
+            AIT = 500; //Autoignition temperature (°C)         
+
+            //UniqueFormulas
+            P_gas = P_a * (float)M / (R * (T_a + (float)273.15));
+            Gamma = (float)M * (float)C_p / (M * C_p - R / 1000);
+            double CriticalPressure = P_a * Math.Pow((((float)Gamma + 1) / 2), (float)Gamma / ((float)Gamma - 1));
+
+            //Console Output
             string message = "You've selected Natural gas...";
             Console.WriteLine(message);
             Console.WriteLine("");
-            LFL = (float)0.04;
-            M = 20;
-            AIT = 500;
-            P_gas = P_a * (float)M / (R * (T_a + (float)273.15));
             Console.WriteLine("gas density " + P_gas + " kg/m^3");
             Console.WriteLine("Lower flammable limit " + LFL + " vol/vol");
             Console.WriteLine("Molar mass " + M + " kg/kmol");
             Console.WriteLine("Auto-ignition temperature " + AIT + " °C");
-
+            Console.WriteLine("Polytropic index of adiabatic expansion " + Gamma);
+            Console.WriteLine("critical pressure " + CriticalPressure + " Pa");
         }
         else
         {
+            //Console Output
             string message = "No " + userValue + " option available sorry; please choose either Propane, Benzene or Natural gas";
             Console.WriteLine(message);
         }
